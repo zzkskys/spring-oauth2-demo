@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>org.example</groupId>
-    <artifactId>oauth2-server</artifactId>
+    <artifactId>oauth2-auth-server</artifactId>
 
 
     <dependencies>
