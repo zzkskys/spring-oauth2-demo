@@ -35,12 +35,17 @@ class AuthServerConfig {
         val authorizationServerConfigurer = OAuth2AuthorizationServerConfigurer()
         http.apply(authorizationServerConfigurer)
 
-        http.exceptionHandling { exceptions ->
-            exceptions
-                .authenticationEntryPoint(
-                    LoginUrlAuthenticationEntryPoint("/login")
-                )
-        }
+
+        http
+            .requestMatcher(authorizationServerConfigurer.endpointsMatcher)
+            .authorizeHttpRequests { it.anyRequest().authenticated() }
+            .csrf { csrf -> csrf.disable() }
+            .exceptionHandling { exceptions ->
+                exceptions
+                    .authenticationEntryPoint(
+                        LoginUrlAuthenticationEntryPoint("/login")
+                    )
+            }
         return http.build()
     }
 
@@ -58,6 +63,7 @@ class AuthServerConfig {
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
             .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+            .authorizationGrantType(AuthorizationGrantType.JWT_BEARER)
             .redirectUri("http://127.0.0.1:8080/login/oauth2/code/messaging-client-oidc")
             .redirectUri("http://127.0.0.1:8080/authorized")
             .scope(OidcScopes.OPENID)
