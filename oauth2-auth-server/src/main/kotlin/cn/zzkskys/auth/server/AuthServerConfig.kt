@@ -60,10 +60,12 @@ class AuthServerConfig {
             .clientId("messaging-client")
             .clientSecret("{noop}secret")
             .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-            .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-            .authorizationGrantType(AuthorizationGrantType.JWT_BEARER)
+            .authorizationGrantTypes {
+                it.add(AuthorizationGrantType.AUTHORIZATION_CODE)
+                it.add(AuthorizationGrantType.REFRESH_TOKEN)
+                it.add(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                it.add(AuthorizationGrantType.JWT_BEARER)
+            }
             .redirectUri("http://127.0.0.1:8080/login/oauth2/code/messaging-client-oidc")
             .redirectUri("http://127.0.0.1:8080/authorized")
             .scope(OidcScopes.OPENID)
@@ -72,7 +74,7 @@ class AuthServerConfig {
             .clientSettings(
                 ClientSettings
                     .builder()
-                    .requireAuthorizationConsent(true)
+                    .requireAuthorizationConsent(false)
                     .build()
             )
             .tokenSettings(
