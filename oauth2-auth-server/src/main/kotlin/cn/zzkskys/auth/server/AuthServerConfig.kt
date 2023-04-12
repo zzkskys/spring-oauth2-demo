@@ -13,8 +13,10 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint
+import java.time.Duration
 import java.util.*
 
 
@@ -34,8 +36,6 @@ class AuthServerConfig {
     fun authorizationServerSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
         val authorizationServerConfigurer = OAuth2AuthorizationServerConfigurer()
         http.apply(authorizationServerConfigurer)
-
-
         http
             .requestMatcher(authorizationServerConfigurer.endpointsMatcher)
             .authorizeHttpRequests { it.anyRequest().authenticated() }
@@ -69,7 +69,19 @@ class AuthServerConfig {
             .scope(OidcScopes.OPENID)
             .scope("message.read")
             .scope("message.write")
-            .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+            .clientSettings(
+                ClientSettings
+                    .builder()
+                    .requireAuthorizationConsent(true)
+                    .build()
+            )
+            .tokenSettings(
+                TokenSettings
+                    .builder()
+                    .accessTokenTimeToLive(Duration.ofHours(1))
+                    .refreshTokenTimeToLive(Duration.ofHours(1))
+                    .build()
+            )
             .build()
         return InMemoryRegisteredClientRepository(registeredClient)
     }
