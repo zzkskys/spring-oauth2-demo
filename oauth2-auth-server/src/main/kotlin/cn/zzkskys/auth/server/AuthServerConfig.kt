@@ -74,7 +74,7 @@ class AuthServerConfig {
             .clientSettings(
                 ClientSettings
                     .builder()
-                    .requireAuthorizationConsent(false)
+                    .requireAuthorizationConsent(true)
                     .build()
             )
             .tokenSettings(
