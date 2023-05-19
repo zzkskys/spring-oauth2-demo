@@ -3,7 +3,9 @@ package cn.zzkskys.auth.server
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
+import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer
 import org.springframework.security.oauth2.core.AuthorizationGrantType
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod
 import org.springframework.security.oauth2.core.oidc.OidcScopes
@@ -35,7 +37,10 @@ class AuthServerConfig {
     @Throws(Exception::class)
     fun authorizationServerSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
         val authorizationServerConfigurer = OAuth2AuthorizationServerConfigurer()
-        http.apply(authorizationServerConfigurer)
+        http
+            .apply(authorizationServerConfigurer)
+            .oidc(Customizer.withDefaults())
+
         http
             .requestMatcher(authorizationServerConfigurer.endpointsMatcher)
             .authorizeHttpRequests { it.anyRequest().authenticated() }
@@ -46,6 +51,8 @@ class AuthServerConfig {
                         LoginUrlAuthenticationEntryPoint("/login")
                     )
             }
+            .oauth2ResourceServer{server -> server.jwt()}
+
         return http.build()
     }
 
@@ -97,6 +104,5 @@ class AuthServerConfig {
     fun authorizationServerSettings(): AuthorizationServerSettings {
         return AuthorizationServerSettings.builder().build()
     }
-
 
 }
