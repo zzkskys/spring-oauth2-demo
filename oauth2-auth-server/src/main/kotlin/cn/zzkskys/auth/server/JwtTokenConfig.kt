@@ -49,11 +49,6 @@ class JwtTokenConfig {
             .build()
         val jwkSet = JWKSet(rsaKey)
 
-        val base64PubKey: String = Base64.getEncoder().encodeToString(pubKey.encoded)
-        val base64PrvKey: String = Base64.getEncoder().encodeToString(prvKey.encoded)
-
-        println("pubKey : $base64PubKey")
-        println("prvKey : $base64PrvKey")
         return ImmutableJWKSet(jwkSet)
     }
 
