@@ -22,12 +22,12 @@ class RestAuthenticationSuccessHandler(
         response: HttpServletResponse,
         authentication: Authentication
     ) {
-        setResponse(request, response, authentication)
+
         val savedRequest = requestCache.getRequest(request, response)
         if (savedRequest == null) {
             clearAuthenticationAttributes(request)
-            return
         }
+        setResponse(request, response, authentication)
     }
 
     private fun setResponse(

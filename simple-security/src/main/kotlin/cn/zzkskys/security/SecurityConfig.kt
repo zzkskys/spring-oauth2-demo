@@ -25,32 +25,32 @@ import java.util.Collections.singletonList
 @Configuration
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 class SecurityConfig(
-    private val objectMapper: ObjectMapper
+        private val objectMapper: ObjectMapper
 ) {
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
-            .cors { it.configurationSource(corsConfigurationSource()) }
-            .csrf().disable()
-            .headers { it.frameOptions().disable() }
-            .exceptionHandling { handler ->
-                handler.authenticationEntryPoint(HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                    .accessDeniedHandler(AccessDeniedHandlerImpl())
-            }
-            .authorizeHttpRequests {
-                it.antMatchers("/public/**").permitAll()
-                it.anyRequest().authenticated()
-            }
-            .formLogin { login ->
-                login
-                    .loginProcessingUrl("/login")
-                    .successHandler(RestAuthenticationSuccessHandler(objectMapper))
-                    .failureHandler(SimpleUrlAuthenticationFailureHandler())
+                .cors { it.configurationSource(corsConfigurationSource()) }
+                .csrf().disable()
+                .headers { it.frameOptions().disable() }
+                .exceptionHandling { handler ->
+                    handler.authenticationEntryPoint(HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                            .accessDeniedHandler(AccessDeniedHandlerImpl())
+                }
+                .authorizeHttpRequests {
+                    it.antMatchers("/public/**").permitAll()
+                    it.anyRequest().authenticated()
+                }
+                .formLogin { login ->
+                    login
+                            .loginProcessingUrl("/login")
+                            .successHandler(RestAuthenticationSuccessHandler(objectMapper))
+                            .failureHandler(SimpleUrlAuthenticationFailureHandler())
 
-            }
-            .sessionManagement { it.maximumSessions(1) }
-            .logout { logout -> logout.logoutSuccessHandler(RestLogoutHandler()) }
+                }
+                .sessionManagement { it.maximumSessions(1)}
+                .logout { logout -> logout.logoutSuccessHandler(RestLogoutHandler()) }
 
         return http.build()
     }
